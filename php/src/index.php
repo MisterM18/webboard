@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,119 +8,114 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="css/styles.css" rel="stylesheet" />
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    <title>Document</title>
+    <title>Webboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+
 </head>
+<?php if (!isset($_SESSION['id'])) { #ไม่ได้ล็อกอิน
+?>
 
 <body>
+    <div class="container">
+        <H1 style="text-align: center;">Webboard</H1>
+        <?php include "nav.php"; ?>
+        <br>
+        <div class="d-flex justify-content-between">
+            <div>
+                <label>หมวดหมู่:</label>
+                <span class="dropdown">
+                    <button class="btn btn-light dropdown-toggle btn-sm" type="button" id="Button2"
+                        data-bs-toggle="dropdown" aria-expanded="false">--ทั้งหมด--</button>
+                    <ul class="dropdown-menu" aria-labelledby="Button2">
+                        <li><a href="#" class="dropdown-item">ทั้งหมด</a></li>
+                        <?php
+                            $conn = new PDO("mysql:host=localhost;dbname=webboard;charset=utf8", "root", "");
+                            $sql = "SELECT * FROM category";
+                            foreach ($conn->query($sql) as $row) {
+                                echo "<li><a class=dropdown-item href=#>$row[name]</a></li>";
+                            }
+                            $conn = null
+                            ?>
+                    </ul>
+                </span>
+            </div>
 
-    <?php require_once 'nav.php'; ?>
-    <div class="wrapper">
-        <span class="icon-close">
-            <ion-icon name="close"></ion-icon>
-        </span>
-        <div class="form-box login">
-            <h2>Login</h2>
-            <form action="#">
-                <div class="input-box">
-                    <span class="icon">
-                        <ion-icon name="mail"></ion-icon>
-                    </span>
-                    <input type="email" required>
-                    <label>Email</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon">
-                        <ion-icon name="lock-closed"></ion-icon>
-                    </span>
-                    <input type="password" required>
-                    <label>Password</label>
-                </div>
-                <div class="remember-forgot">
-                    <label><input type="checkbox">Remember me</label>
-                    <a href="#">Forget Password</a>
-                </div>
-                <button type="submit" class="btn">Login</button>
-                <div class="login-register">
-                    <p>Don't have an account? <a href="#" class="register-link">Register</a></p>
-                </div>
-            </form>
         </div>
-
-        <div class="form-box register">
-            <h2>Registration</h2>
-            <form action="#">
-                <div class="input-box">
-                    <span class="icon">
-                        <ion-icon name="person"></ion-icon>
-                    </span>
-                    <input type="text" required>
-                    <label>Username</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon">
-                        <ion-icon name="mail"></ion-icon>
-                    </span>
-                    <input type="email" required>
-                    <label>Email</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon">
-                        <ion-icon name="lock-closed"></ion-icon>
-                    </span>
-                    <input type="password" required>
-                    <label>Password</label>
-                </div>
-                <div class="remember-forgot">
-                    <label><input type="checkbox">agree to the terms & conditions</label>
-                </div>
-                <button type="submit" class="btn">Register</button>
-                <div class="login-register">
-                    <p>Already have an account? <a href="#" class="login-link">Login</a></p>
-                </div>
-            </form>
-        </div>
-
+        <br>
+        <table class="table table-striped">
+            <?php
+                $conn = new PDO("mysql:host=localhost;dbname=webboard;charset=utf8", "root", "");
+                $sql = "SELECT t3.name,t1.title,t1.id,t2.login,t1.post_date
+                FROM post as t1 INNER JOIN user as t2 ON (t1.user_id=t2.id) 
+                INNER JOIN category as t3 ON (t1.cat_id=t3.id) 
+                ORDER BY t1.post_date DESC";
+                $result = $conn->query($sql);
+                while ($row = $result->fetch()) {
+                    echo "<tr><td>{ $row[0] <a href=post.php?id=$row[2]
+                         style=text-decoration:none>$row[1]</a> }<br>$row[3] - $row[4]</td></tr>";
+                }
+                $conn = null;
+                ?>
+        </table>
     </div>
-
-
-
-
-
-    <!-- <?php
-        $host = 'db';
-        $user = 'root';
-        $pass = 'MYSQL_ROOT_PASSWORD';
-        $db = 'MYSQL_DATABASE';
-
-        $conn = new mysqli($host, $user, $pass, $db);
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        } else {
-            echo "Connected to MySQL server successfully!";
-        }
-
-        $sql = "SELECT * FROM users";
-
-        if ($result = $conn->query($sql)) {
-            while($data = $result->fetch_object()) {
-                $users[] = $data;
-            }
-        }
-
-        echo "<ul>";
-        foreach($users as $user) {
-            echo "<li>";
-            echo $user->first_name . " " . $user->last_name . " " . $user->age;
-            echo "</li>";
-        }
-        echo "</ul>";
-    ?> -->
-
-    <script src="script.js"></script>
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
+<?php } else { # login แล้ว 
+?>
+
+<body>
+    <div class="container">
+        <H1 style="text-align: center;">Webboard Mong</H1>
+        <?php include "nav.php"; ?>
+        <br>
+        <div class="d-flex justify-content-between">
+            <div>
+                <label>หมวดหมู่:</label>
+                <span class="dropdown">
+                    <button class="btn btn-light dropdown-toggle btn-sm" type="button" id="Button2"
+                        data-bs-toggle="dropdown" aria-expanded="false">--ทั้งหมด--</button>
+                    <ul class="dropdown-menu" aria-labelledby="Button2">
+                        <li><a href="#" class="dropdown-item">ทั้งหมด</a></li>
+                        <?php
+                            $conn = new PDO("mysql:host=localhost;dbname=webboard;charset=utf8", "root", "");
+                            $sql = "SELECT * FROM category";
+                            foreach ($conn->query($sql) as $row) {
+                                echo "<li><a class=dropdown-item href=#>$row[name]</a></li>";
+                            }
+                            $conn = null
+                            ?>
+                    </ul>
+                </span>
+            </div>
+            <div><a href="newpost.php" class="btn btn-success btn-sm"><i class="bi bi-plus"></i> สร้างกระทู้ใหม่</a>
+            </div>
+        </div>
+        <br>
+        <table class="table table-striped">
+            <?php
+                $conn = new PDO("mysql:host=localhost;dbname=webboard;charset=utf8", "root", "");
+                $sql = "SELECT t3.name,t1.title,t1.id,t2.login,t1.post_date
+                FROM post as t1 INNER JOIN user as t2 ON (t1.user_id=t2.id) 
+                INNER JOIN category as t3 ON (t1.cat_id=t3.id) 
+                ORDER BY t1.post_date DESC";
+                $result = $conn->query($sql);
+                while ($row = $result->fetch()) {
+                    echo "<tr><td>{ $row[0] <a href=post.php?id=$row[2]
+                         style=text-decoration:none>$row[1]</a> }<br>$row[3] - $row[4]</td>";
+                    if ($_SESSION['role'] == 'a') {
+                        echo  "<td><a href=delete.php?id=$row[2]> <button type-button class ='btn btn-danger btn-sm'><i class= 'bi bi-trash'></i></button></a></td>";
+                    }
+                    echo "</tr>";
+                }
+                ?>
+        </table>
+    </div>
+</body>
+<?php } ?>
+
 
 </html>
