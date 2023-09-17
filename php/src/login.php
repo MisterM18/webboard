@@ -18,7 +18,7 @@ if (isset($_SESSION['id'])) {
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
     </script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
-
+    <link rel="stylesheet" href="style.css">
     <script>
     function password_Show_hide() {
         let x = document.getElementById("password");
@@ -37,9 +37,9 @@ if (isset($_SESSION['id'])) {
     }
     </script>
 
-<body>
+<body >
     <div class="container">
-        <h1 style="text-align: center;" class="mt-3">Webboard Mong</h1>
+        <h2 style="text-align: center; color: #fff;">Webboard</h2>
         <?php include "nav.php"; ?>
         <br>
         <div class="row">
@@ -47,20 +47,20 @@ if (isset($_SESSION['id'])) {
             <div class="col-lg-4">
                 <?php
                 if (isset($_SESSION['error'])) {
-                    echo "<div class='alert alert-danger'>ชื่อบัญชีหรือรหัสผ่านไม่ถูกต้อง</div>";
+                    echo "<div class='alert alert-danger'>Username Or Password not correct</div>";
                     unset($_SESSION['error']);
                 }
                 ?>
-                <div class="card text-dark bg-light">
-                    <div class="card-header">เข้าสู่ระบบ</div>
+                <div class="card" >
+                    <div class="header" style="color:#fff;">Login</div>
                     <div class="card-body">
                         <form action="verify.php" method="post">
                             <div class="form-group">
-                                <label class="form-label">Login :</label>
+                                <label class="form-label" style="color:#fff;">Username</label>
                                 <input type="text" name="login" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Password :</label>
+                                <label class="form-label" style="color:#fff;">Password</label>
                                 <div class="input-group mb-2">
                                     <input type="password" name="pwd" class="form-control" id="password"
                                         required="true">
@@ -74,14 +74,15 @@ if (isset($_SESSION['id'])) {
                             </center>
                         </form>
                     </div>
+                    <div align="center" style="color:#fff;">
+                         Don't have an account? <a href="register.php">Register</a>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-4"></div>
         </div>
         <br>
-        <div align="center">
-            ถ้ายังไม่ได้เป็นสมาชิก <a href="register.php">กรุณาสมัครสมาชิก</a>
-        </div>
+        
     </div>
 </body>
 

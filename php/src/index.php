@@ -15,17 +15,17 @@ session_start();
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
     </script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
-
+    <link rel="stylesheet" href="style.css">
 </head>
 <?php if (!isset($_SESSION['id'])) { #ไม่ได้ล็อกอิน
 ?>
 
 <body>
     <div class="container">
-        <H1 style="text-align: center;">Webboard</H1>
+        <h2 style="text-align: center; color: #fff;">Webboard</h2>
         <?php include "nav.php"; ?>
         <br>
-        <div class="d-flex justify-content-between">
+        <!-- <div class="d-flex justify-content-between">
             <div>
                 <label>หมวดหมู่:</label>
                 <span class="dropdown">
@@ -45,7 +45,7 @@ session_start();
                 </span>
             </div>
 
-        </div>
+        </div> -->
         <br>
         <table class="table table-striped">
             <?php

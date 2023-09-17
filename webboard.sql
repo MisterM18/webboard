@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: db
--- Generation Time: Sep 17, 2023 at 05:55 AM
--- Server version: 8.1.0
--- PHP Version: 8.2.8
+-- Host: 127.0.0.1
+-- Generation Time: Sep 16, 2023 at 06:14 PM
+-- Server version: 10.4.25-MariaDB
+-- PHP Version: 8.1.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,9 +28,9 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `category` (
-  `id` int NOT NULL,
-  `name` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+  `id` int(11) NOT NULL,
+  `name` varchar(32) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `category`
@@ -48,12 +48,29 @@ INSERT INTO `category` (`id`, `name`) VALUES
 --
 
 CREATE TABLE `comment` (
-  `id` int NOT NULL,
-  `content` varchar(20148) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `id` int(11) NOT NULL,
+  `content` varchar(20148) COLLATE utf8_unicode_ci NOT NULL,
   `post_date` datetime NOT NULL,
-  `user_id` int NOT NULL,
-  `post_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+  `user_id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `comment`
+--
+
+INSERT INTO `comment` (`id`, `content`, `post_date`, `user_id`, `post_id`) VALUES
+(1, '1822', '2023-03-23 10:00:38', 20, 7),
+(2, '111\r\n', '2023-03-23 10:02:10', 20, 3),
+(3, '', '2023-03-23 10:04:52', 20, 4),
+(4, 'mongkol', '2023-03-23 10:07:37', 20, 7),
+(5, 'mongkol', '2023-03-23 10:08:24', 20, 7),
+(6, '22\r\n', '2023-03-23 10:09:14', 20, 7),
+(7, '1155\r\n', '2023-03-23 10:10:10', 20, 7),
+(8, '1155\r\n', '2023-03-23 10:10:57', 20, 7),
+(9, '', '2023-03-23 10:11:00', 20, 7),
+(10, 'mongkol', '2023-03-23 10:11:07', 20, 7),
+(11, '1822\r\n', '2023-03-23 10:18:19', 20, 7);
 
 -- --------------------------------------------------------
 
@@ -62,13 +79,24 @@ CREATE TABLE `comment` (
 --
 
 CREATE TABLE `post` (
-  `id` int NOT NULL,
-  `title` varchar(128) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `content` varchar(2048) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `id` int(11) NOT NULL,
+  `title` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `content` varchar(2048) COLLATE utf8_unicode_ci NOT NULL,
   `post_date` datetime NOT NULL,
-  `cat_id` int NOT NULL,
-  `user_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+  `cat_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `post`
+--
+
+INSERT INTO `post` (`id`, `title`, `content`, `post_date`, `cat_id`, `user_id`) VALUES
+(3, 'ลิเวอร์พูล vs แมนยู', 'ลิเวอร์พูลยิงยับ 7 - 0 !!!!!!\r\n', '2023-03-10 11:53:18', 3, 20),
+(4, 'Onepiece หน่ะ มีอยู่จริงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงง', 'สมบัติของชั้นหน่ะหรออยากได้ก็เอาไปสิไปหาเอาเลยชั้น เอาทุกอย่างไปทิ้งไว้ที่นัั้นหมดแล้ว ', '2023-03-17 09:30:53', 1, 20),
+(5, ' How to grade A', 'มีวิธีการยังไงบ้างครับ T-T', '2023-03-17 09:31:48', 2, 20),
+(6, 'ไม่รู้ๆๆๆๆๆๆ', 'ป้อมๆๆๆๆ\r\n', '2023-03-17 09:51:20', 1, 20),
+(7, 'คุณชอบอะไร', 'ชอบที่เธอเป็นเธฮ\r\n', '2023-03-17 09:53:48', 1, 20);
 
 -- --------------------------------------------------------
 
@@ -77,14 +105,14 @@ CREATE TABLE `post` (
 --
 
 CREATE TABLE `user` (
-  `id` int NOT NULL,
-  `login` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `password` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `gender` char(1) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `email` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `role` char(1) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+  `id` int(11) NOT NULL,
+  `login` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `gender` char(1) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `role` char(1) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `user`
@@ -130,25 +158,25 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `comment`
 --
 ALTER TABLE `comment`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `post`
 --
 ALTER TABLE `post`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
