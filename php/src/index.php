@@ -25,7 +25,7 @@ session_start();
         <h2 style="text-align: center; color: #fff;">Webboard</h2>
         <?php include "nav.php"; ?>
         <br>
-        <!-- <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between">
             <div>
                 <label>หมวดหมู่:</label>
                 <span class="dropdown">
@@ -45,7 +45,7 @@ session_start();
                 </span>
             </div>
 
-        </div> -->
+        </div>
         <br>
         <table class="table table-striped">
             <?php

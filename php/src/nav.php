@@ -7,7 +7,7 @@ if (!isset($_SESSION['id'])) {
             <a class="navbar-brand" href="index.php"><i class="bi bi-house-door-fill"></i>Home</a>
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="login.php" style="color: #fff;"><i class="bi bi-pencil-square"></i>เข้าสู่ระบบ</a>
+                    <a class="nav-link active" aria-current="page" href="login.php" style="color: #fff;"><i class="bi bi-pencil-square"></i>Login</a>
                 </li>
             </ul>
         </div>
@@ -24,7 +24,7 @@ if (!isset($_SESSION['id'])) {
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="Button1">
                         <li><a href="logout.php" class="dropdown-item">
-                                <i class="bi bi-power">ออกจากระบบ</i>
+                                <i class="bi bi-power">Logout</i>
                             </a></li>
                     </ul>
                 </div>

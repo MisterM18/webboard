@@ -17,8 +17,11 @@ if (isset($_SESSION['id'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
     </script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="style.css">
+    <script src="scripts.js"></script>
     <script>
     function password_Show_hide() {
         let x = document.getElementById("password");
@@ -37,53 +40,53 @@ if (isset($_SESSION['id'])) {
     }
     </script>
 
-<body >
+<body style="align-items: center;" >
     <div class="container">
         <h2 style="text-align: center; color: #fff;">Webboard</h2>
         <?php include "nav.php"; ?>
         <br>
-        <div class="row">
-            <div class="col-lg-4"></div>
-            <div class="col-lg-4">
+
                 <?php
                 if (isset($_SESSION['error'])) {
                     echo "<div class='alert alert-danger'>Username Or Password not correct</div>";
                     unset($_SESSION['error']);
                 }
                 ?>
+                <center>
                 <div class="card" >
-                    <div class="header" style="color:#fff;">Login</div>
+                    <br>
+                    <h2 style="color: #fff;">Welcome</h2>
                     <div class="card-body">
                         <form action="verify.php" method="post">
-                            <div class="form-group">
-                                <label class="form-label" style="color:#fff;">Username</label>
-                                <input type="text" name="login" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" style="color:#fff;">Password</label>
-                                <div class="input-group mb-2">
-                                    <input type="password" name="pwd" class="form-control" id="password"
-                                        required="true">
-                                    <span class="input-group-text" onclick="password_Show_hide();">
+                        <div class="input-box">
+                                <span class="icon " style="color:#fff;" >
+                                <ion-icon name="person-circle"></ion-icon>
+                                </span>
+                                <input type="Username" name="login" required>
+                                 <label>Username</label>
+                        </div>
+                        <div class="input-box">
+                            <span class="icon"></span>
+                            <input type="password" name="pwd" required>
+                            <label>Password</label>
+                        </div>
+                            <!-- <span class="input-group-text" onclick="password_Show_hide();">
                                         <i class="bi bi-eye-fill" id="show_eye"></i>
                                         <i class="bi bi-eye-slash-fill d-none " id="hide_eye"></i>
-                                    </span>
-                                </div>
-                            </div>
-                            <center> <button class="btn btn-secondary btn-sm mt-3" type="submit"> Login</button>
-                            </center>
+                                 </span> -->
+                                 <button type="submit" class="btn">Login</button>
                         </form>
                     </div>
                     <div align="center" style="color:#fff;">
                          Don't have an account? <a href="register.php">Register</a>
                     </div>
+                    
                 </div>
             </div>
-            <div class="col-lg-4"></div>
+            
         </div>
-        <br>
-        
     </div>
+    </center>
 </body>
 
 </html>
