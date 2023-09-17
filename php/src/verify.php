@@ -1,15 +1,20 @@
-<?php session_start();
+<?php
+session_start();
 if (isset($_SESSION["username"]) && $_SESSION["id"] == session_id()) {
     header("location: index.php");
     die();
 }
 $u = $_POST['login'];
 $p = $_POST['pwd'];
-$conn = new PDO("mysql:host=localhost;dbname=webboard;charset=utf8","root", "");
+$host = 'db';
+$user = 'root';
+$pass = 'MYSQL_ROOT_PASSWORD';
+$db = 'webboard';
+$conn = new mysqli($host, $user, $pass, $db);
 $sql = "SELECT * FROM user where login='$u' and password=sha1('$p')";
 $result = $conn->query($sql);
-if ($result->rowCount() == 1) {
-    $data = $result->fetch(PDO::FETCH_ASSOC);
+if ($result->num_rows == 1) { // ใช้ num_rows แทน rowCount
+    $data = $result->fetch_assoc(); // ใช้ fetch_assoc() แทน fetch(PDO::FETCH_ASSOC)
     $_SESSION["username"] = $data["login"];
     $_SESSION["role"] = $data["role"];
     $_SESSION["user_id"] = $data["id"];
@@ -21,5 +26,5 @@ if ($result->rowCount() == 1) {
     header("Location:login.php");
     die();
 }
-$conn = null;
+$conn->close(); // ใช้ close() แทน null
 ?>

@@ -9,19 +9,30 @@ $passwd = sha1($_POST['pwd']);
 $name = $_POST['namelastname'];
 $gender = $_POST['gender'];
 $email = $_POST['email'];
-
-$conn = new PDO("mysql:host=localhost;dbname=webboard;charset=utf8", "root", "");
+$host = 'db';
+$user = 'root';
+$pass = 'MYSQL_ROOT_PASSWORD';
+$db = 'webboard';
+$conn = new mysqli($host, $user, $pass, $db);
 $sql = "SELECT * FROM user where login='$login'";
-$result=$conn->query($sql);
-if($result->rowCount()==1){
-        $_SESSION['add_login']="error";
-}else{
-        $sql1 = "INSERT INTO user (login,password,name,gender,email,role) 
-            VALUES('$login','$passwd','$name','$gender','$email','m')";
-        $conn->exec($sql1);
-        $_SESSION['add_login']="success";
+$result = $conn->query($sql);
+
+if ($result->num_rows == 1) {
+    $_SESSION['add_login'] = "error";
+} else {
+    $sql1 = "INSERT INTO user (login,password,name,gender,email,role) 
+        VALUES('$login','$passwd','$name','$gender','$email','m')";
+    $conn->query($sql1);
+
+    if ($conn->affected_rows > 0) {
+        $_SESSION['add_login'] = "success";
+    } else {
+        $_SESSION['add_login'] = "error";
+    }
 }
-$conn = null;
+
+$conn->close();
 header("location:register.php");
 die();
+
 ?>

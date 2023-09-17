@@ -34,7 +34,11 @@ session_start();
                     <ul class="dropdown-menu" aria-labelledby="Button2">
                         <li><a href="#" class="dropdown-item">ทั้งหมด</a></li>
                         <?php
-                            $conn = new PDO("mysql:host=localhost;dbname=webboard;charset=utf8", "root", "");
+                            $host = 'db';
+                            $user = 'root';
+                            $pass = 'MYSQL_ROOT_PASSWORD';
+                            $db = 'webboard';
+                            $conn = new mysqli($host, $user, $pass, $db);
                             $sql = "SELECT * FROM category";
                             foreach ($conn->query($sql) as $row) {
                                 echo "<li><a class=dropdown-item href=#>$row[name]</a></li>";
@@ -49,18 +53,24 @@ session_start();
         <br>
         <table class="table table-striped">
             <?php
-                $conn = new PDO("mysql:host=localhost;dbname=webboard;charset=utf8", "root", "");
-                $sql = "SELECT t3.name,t1.title,t1.id,t2.login,t1.post_date
-                FROM post as t1 INNER JOIN user as t2 ON (t1.user_id=t2.id) 
-                INNER JOIN category as t3 ON (t1.cat_id=t3.id) 
-                ORDER BY t1.post_date DESC";
-                $result = $conn->query($sql);
-                while ($row = $result->fetch()) {
-                    echo "<tr><td>{ $row[0] <a href=post.php?id=$row[2]
-                         style=text-decoration:none>$row[1]</a> }<br>$row[3] - $row[4]</td></tr>";
+                $host = 'db';
+                $user = 'root';
+                $pass = 'MYSQL_ROOT_PASSWORD';
+                $db = 'webboard';
+                $conn = new mysqli($host, $user, $pass, $db);
+                $login = ''; // กำหนดค่าเริ่มต้นเป็นสตริงว่าง
+                if (isset($_POST['login'])) {
+                    $login = $_POST['login']; // กำหนดค่า $login จากข้อมูล POST
                 }
-                $conn = null;
-                ?>
+                $sql = "SELECT * FROM user where login='$login'";
+                $result = $conn->query($sql);
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    echo "<tr><td>{$row['name']} <a href=post.php?id={$row['id']} style='text-decoration:none'>{$row['title']}</a></td><td>{$row['login']} - {$row['post_date']}</td></tr>";
+                }
+            } 
+            $conn->close();
+?>
         </table>
     </div>
 </body>
@@ -69,7 +79,7 @@ session_start();
 
 <body>
     <div class="container">
-        <H1 style="text-align: center;">Webboard Mong</H1>
+        <H1 style="text-align: center;">Webboard</H1>
         <?php include "nav.php"; ?>
         <br>
         <div class="d-flex justify-content-between">
@@ -81,8 +91,18 @@ session_start();
                     <ul class="dropdown-menu" aria-labelledby="Button2">
                         <li><a href="#" class="dropdown-item">ทั้งหมด</a></li>
                         <?php
-                            $conn = new PDO("mysql:host=localhost;dbname=webboard;charset=utf8", "root", "");
-                            $sql = "SELECT * FROM category";
+                           $host = 'db';
+                           $user = 'root';
+                           $pass = 'MYSQL_ROOT_PASSWORD';
+                           $db = 'webboard';
+                           $conn = new mysqli($host, $user, $pass, $db);
+                           $login = ''; // กำหนดค่าเริ่มต้นเป็นสตริงว่าง
+                           if (isset($_POST['login'])) {
+                           $login = $_POST['login']; // กำหนดค่า $login จากข้อมูล POST
+                           }
+                           // ต่อมาสร้างคำสั่ง SQL โดยใช้ $login
+                           $sql = "SELECT * FROM user where login='$login'";
+                           $sql = "SELECT * FROM category";
                             foreach ($conn->query($sql) as $row) {
                                 echo "<li><a class=dropdown-item href=#>$row[name]</a></li>";
                             }
@@ -97,21 +117,39 @@ session_start();
         <br>
         <table class="table table-striped">
             <?php
-                $conn = new PDO("mysql:host=localhost;dbname=webboard;charset=utf8", "root", "");
+                $host = 'db';
+                $user = 'root';
+                $pass = 'MYSQL_ROOT_PASSWORD';
+                $db = 'webboard';
+                $conn = new mysqli($host, $user, $pass, $db);
+
+                if ($conn->connect_error) {
+                    die("การเชื่อมต่อกับฐานข้อมูลล้มเหลว: " . $conn->connect_error);
+                }
+
+                // เปลี่ยน $sql เพื่อค้นหาผู้ใช้โดยใช้ $login
+                $login = mysqli_real_escape_string($conn, $login); // ป้องกัน SQL Injection
                 $sql = "SELECT t3.name,t1.title,t1.id,t2.login,t1.post_date
                 FROM post as t1 INNER JOIN user as t2 ON (t1.user_id=t2.id) 
                 INNER JOIN category as t3 ON (t1.cat_id=t3.id) 
                 ORDER BY t1.post_date DESC";
+
                 $result = $conn->query($sql);
-                while ($row = $result->fetch()) {
-                    echo "<tr><td>{ $row[0] <a href=post.php?id=$row[2]
-                         style=text-decoration:none>$row[1]</a> }<br>$row[3] - $row[4]</td>";
-                    if ($_SESSION['role'] == 'a') {
-                        echo  "<td><a href=delete.php?id=$row[2]> <button type-button class ='btn btn-danger btn-sm'><i class= 'bi bi-trash'></i></button></a></td>";
-                    }
-                    echo "</tr>";
+
+                if ($result === false) {
+                    die("เกิดข้อผิดพลาดในการดึงข้อมูล: " . $conn->error);
                 }
-                ?>
+
+                while ($row = $result->fetch_array()) {
+                echo "<tr><td>{$row[0]} <a href='post.php?id={$row[2]}' style='text-decoration:none'>{$row[1]}</a><br>{$row[3]} - {$row[4]}</td>";
+                if ($_SESSION['role'] == 'a') {
+                echo  "<td><a href='delete.php?id={$row[2]}'><button type='button' class='btn btn-danger btn-sm'><i class='bi bi-trash'></i></button></a></td>";
+                }
+                echo "</tr>";
+                }
+                $conn->close();
+            ?>
+
         </table>
     </div>
 </body>

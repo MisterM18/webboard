@@ -35,7 +35,17 @@ if (!isset($_SESSION['id'])) {
                         <div class="col-lg-9">
                             <select name="category" class="form-select">
                                 <?php
-                                $conn = new PDO("mysql:host=localhost;dbname=webboard;charset=utf8", "root", "");
+                                $host = 'db';
+                                $user = 'root';
+                                $pass = 'MYSQL_ROOT_PASSWORD';
+                                $db = 'webboard';
+                                $conn = new mysqli($host, $user, $pass, $db);
+                                $login = ''; // กำหนดค่าเริ่มต้นเป็นสตริงว่าง
+                                if (isset($_POST['login'])) {
+                                $login = $_POST['login']; // กำหนดค่า $login จากข้อมูล POST
+                                }
+                                // ต่อมาสร้างคำสั่ง SQL โดยใช้ $login
+                                $sql = "SELECT * FROM user where login='$login'";
                                 $sql = "SELECT * FROM category";
                                 foreach ($conn->query($sql) as $row) {
                                     echo "<option value=" . $row['id'] . ">" . $row['name'] . "</option>";
