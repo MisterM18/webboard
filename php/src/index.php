@@ -34,11 +34,7 @@ session_start();
                     <ul class="dropdown-menu" aria-labelledby="Button2">
                         <li><a href="#" class="dropdown-item">ทั้งหมด</a></li>
                         <?php
-                            $host = 'db';
-                            $user = 'root';
-                            $pass = 'MYSQL_ROOT_PASSWORD';
-                            $db = 'webboard';
-                            $conn = new mysqli($host, $user, $pass, $db);
+                            include 'attractions/db.php';
                             $sql = "SELECT * FROM category";
                             foreach ($conn->query($sql) as $row) {
                                 echo "<li><a class=dropdown-item href=#>$row[name]</a></li>";
@@ -141,7 +137,7 @@ session_start();
                 }
 
                 while ($row = $result->fetch_array()) {
-                echo "<tr><td>{$row[0]} <a href='post.php?id={$row[2]}' style='text-decoration:none'>{$row[1]}</a><br>{$row[3]} - {$row[4]}</td>";
+                echo "<tr><td>{$row[0]} <ahref='post.php?id={$row[2]}' style='text-decoration:none'>{$row[1]}</a><br>{$row[3]} - {$row[4]}</td>";
                 if ($_SESSION['role'] == 'a') {
                 echo  "<td><a href='delete.php?id={$row[2]}'><button type='button' class='btn btn-danger btn-sm'><i class='bi bi-trash'></i></button></a></td>";
                 }
