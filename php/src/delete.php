@@ -14,8 +14,8 @@ if ($_SESSION['role'] != 'a') {
         die("Connection failed: " . $conn->connect_error);
     }
     
-    // เตรียมคำสั่ง SQL สำหรับลบข้อมูล
-    $sql = "DELETE FROM post WHERE id = $id";
+    // เตรียมคำสั่ง SQL สำหรับลบโพสต์และความคิดเห็นที่เชื่อมโยงกัน
+    $sql = "DELETE post, comment FROM post LEFT JOIN comment ON post.id = comment.post_id WHERE post.id = $id";
     
     // ทำการ query คำสั่ง SQL
     if ($conn->query($sql) === TRUE) {
@@ -24,7 +24,6 @@ if ($_SESSION['role'] != 'a') {
     } else {
         echo "เกิดข้อผิดพลาดในการลบข้อมูล: " . $conn->error;
     }
-    
     $conn->close();
 }
 ?>
