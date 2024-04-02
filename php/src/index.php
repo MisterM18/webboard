@@ -1,5 +1,10 @@
 <?php
 session_start();
+
+if (isset($_SESSION['delete_success']) && $_SESSION['delete_success'] === true) {
+    echo '<script>alert("ลบข้อมูลสำเร็จ");</script>';
+    unset($_SESSION['delete_success']); // ลบ session เพื่อไม่ให้แสดงข้อความอีกครั้งหลังจาก refresh
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +22,7 @@ session_start();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<?php if (!isset($_SESSION['id'])) { #ไม่ได้ล็อกอิน
+<?php if (!isset($_SESSION['username'])) { # ไม่ได้ล็อกอิน
 ?>
 
 <body>
@@ -34,12 +39,15 @@ session_start();
                     <ul class="dropdown-menu" aria-labelledby="Button2">
                         <li><a href="#" class="dropdown-item">ทั้งหมด</a></li>
                         <?php
-                            include 'attractions/db.php';
+                            $host = 'db';
+                            $user = 'root';
+                            $pass = 'MYSQL_ROOT_PASSWORD';
+                            $db = 'webboard';
+                            $conn = new mysqli($host, $user, $pass, $db);
                             $sql = "SELECT * FROM category";
                             foreach ($conn->query($sql) as $row) {
-                                echo "<li><a class=dropdown-item href=#>$row[name]</a></li>";
+                                echo "<li><a class=dropdown-item href=#>{$row['name']}</a></li>";
                             }
-                            $conn = null
                             ?>
                     </ul>
                 </span>
@@ -54,9 +62,9 @@ session_start();
                 $pass = 'MYSQL_ROOT_PASSWORD';
                 $db = 'webboard';
                 $conn = new mysqli($host, $user, $pass, $db);
-                $login = ''; // กำหนดค่าเริ่มต้นเป็นสตริงว่าง
+                $login = ''; // Set default value to empty string
                 if (isset($_POST['login'])) {
-                    $login = $_POST['login']; // กำหนดค่า $login จากข้อมูล POST
+                    $login = $_POST['login']; // Set $login value from POST data
                 }
                 $sql = "SELECT * FROM user where login='$login'";
                 $result = $conn->query($sql);
@@ -85,25 +93,18 @@ session_start();
                     <button class="btn btn-light dropdown-toggle btn-sm" type="button" id="Button2"
                         data-bs-toggle="dropdown" aria-expanded="false">--ทั้งหมด--</button>
                     <ul class="dropdown-menu" aria-labelledby="Button2">
-                        <li><a href="#" class="dropdown-item">ทั้งหมด</a></li>
+                        <li><a href="index.php" class="dropdown-item">ทั้งหมด</a></li>
                         <?php
-                           $host = 'db';
-                           $user = 'root';
-                           $pass = 'MYSQL_ROOT_PASSWORD';
-                           $db = 'webboard';
-                           $conn = new mysqli($host, $user, $pass, $db);
-                           $login = ''; // กำหนดค่าเริ่มต้นเป็นสตริงว่าง
-                           if (isset($_POST['login'])) {
-                           $login = $_POST['login']; // กำหนดค่า $login จากข้อมูล POST
-                           }
-                           // ต่อมาสร้างคำสั่ง SQL โดยใช้ $login
-                           $sql = "SELECT * FROM user where login='$login'";
-                           $sql = "SELECT * FROM category";
-                            foreach ($conn->query($sql) as $row) {
-                                echo "<li><a class=dropdown-item href=#>$row[name]</a></li>";
-                            }
-                            $conn = null
-                            ?>
+                    $host = 'db';
+                    $user = 'root';
+                    $pass = 'MYSQL_ROOT_PASSWORD';
+                    $db = 'webboard';
+                    $conn = new mysqli($host, $user, $pass, $db);
+                    $sql = "SELECT * FROM category";
+                    foreach ($conn->query($sql) as $row) {
+                        echo "<li><a href='index.php?category_id={$row['id']}' class='dropdown-item'>{$row['name']}</a></li>";
+                    }
+                    ?>
                     </ul>
                 </span>
             </div>
@@ -113,41 +114,49 @@ session_start();
         <br>
         <table class="table table-striped">
             <?php
-                $host = 'db';
-                $user = 'root';
-                $pass = 'MYSQL_ROOT_PASSWORD';
-                $db = 'webboard';
-                $conn = new mysqli($host, $user, $pass, $db);
+        $host = 'db';
+        $user = 'root';
+        $pass = 'MYSQL_ROOT_PASSWORD';
+        $db = 'webboard';
+        $conn = new mysqli($host, $user, $pass, $db);
 
-                if ($conn->connect_error) {
-                    die("การเชื่อมต่อกับฐานข้อมูลล้มเหลว: " . $conn->connect_error);
-                }
+        if ($conn->connect_error) {
+            die("การเชื่อมต่อกับฐานข้อมูลล้มเหลว: " . $conn->connect_error);
+        }
 
-                // เปลี่ยน $sql เพื่อค้นหาผู้ใช้โดยใช้ $login
-                $login = mysqli_real_escape_string($conn, $login); // ป้องกัน SQL Injection
-                $sql = "SELECT t3.name,t1.title,t1.id,t2.login,t1.post_date
-                FROM post as t1 INNER JOIN user as t2 ON (t1.user_id=t2.id) 
-                INNER JOIN category as t3 ON (t1.cat_id=t3.id) 
-                ORDER BY t1.post_date DESC";
+        if(isset($_GET['category_id'])) {
+            $selected_category_id = mysqli_real_escape_string($conn, $_GET['category_id']);
+            $sql = "SELECT t3.name,t1.title,t1.id,t2.login,t1.post_date
+                    FROM post as t1 INNER JOIN user as t2 ON (t1.user_id=t2.id) 
+                    INNER JOIN category as t3 ON (t1.cat_id=t3.id) 
+                    WHERE t1.cat_id = $selected_category_id
+                    ORDER BY t1.post_date DESC";
+        } else {
+            $sql = "SELECT t3.name,t1.title,t1.id,t2.login,t1.post_date
+                    FROM post as t1 INNER JOIN user as t2 ON (t1.user_id=t2.id) 
+                    INNER JOIN category as t3 ON (t1.cat_id=t3.id) 
+                    ORDER BY t1.post_date DESC";
+        }
 
-                $result = $conn->query($sql);
+        $result = $conn->query($sql);
 
-                if ($result === false) {
-                    die("เกิดข้อผิดพลาดในการดึงข้อมูล: " . $conn->error);
-                }
+        if ($result === false) {
+            die("เกิดข้อผิดพลาดในการดึงข้อมูล: " . $conn->error);
+        }
 
-                while ($row = $result->fetch_array()) {
-                echo "<tr><td>{$row[0]} <ahref='post.php?id={$row[2]}' style='text-decoration:none'>{$row[1]}</a><br>{$row[3]} - {$row[4]}</td>";
-                if ($_SESSION['role'] == 'a') {
+        while ($row = $result->fetch_array()) {
+            echo "<tr><td>{$row[0]} <a href='post.php?id={$row[2]}' style='text-decoration:none'>{$row[1]}</a><br>{$row[3]} - {$row[4]}</td>";
+            if ($_SESSION['role'] == 'a') {
                 echo  "<td><a href='delete.php?id={$row[2]}'><button type='button' class='btn btn-danger btn-sm'><i class='bi bi-trash'></i></button></a></td>";
-                }
-                echo "</tr>";
-                }
-                $conn->close();
-            ?>
+            }
+            echo "</tr>";
+        }
+        $conn->close();
+        ?>
 
         </table>
     </div>
+
 </body>
 <?php } ?>
 
